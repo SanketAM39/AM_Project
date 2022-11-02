@@ -1,18 +1,11 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import * as yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Reg() {
-  const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("users") || "[]")
-  );
-
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(data));
-  }, [data]);
-
+export default function Reg({ userData, setUserData }) {
+  const Navigate = useNavigate();
   const schema = yup.object().shape({
     fullName: yup
       .string()
@@ -25,7 +18,8 @@ export default function Reg() {
       .matches(
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
         "Enter valid email"
-      ),
+      )
+      ,
 
     companyName: yup.string().required("Field is required !"),
 
@@ -49,14 +43,29 @@ export default function Reg() {
   });
 
   const onSubmit = (values) => {
-    setData([...data, values]);
-    reset();
+    const result = userData.find((element) => element.email === values.email);
+    if (result) {
+      console.log("user already registered");
+      alert("User already registered");
+      reset();
+    } 
+   else {
+      setUserData([...userData, values]);
+      reset();
+      Navigate("/auth/login");
+    }
+
   };
-  console.log(data);
+  console.log(userData);
 
   return (
     <div>
-      <h1 className="d-flex justify-content-center mt-3"> Registration</h1>
+      <h1
+        className="d-flex justify-content-center mt-3"
+      >
+        {" "}
+        Registration
+      </h1>
       <div className="full-width d-flex justify-content-center and align-items-center">
         <form onSubmit={handleSubmit(onSubmit)} className="rounded p-4 p-sm-3">
           <div className="mb-3">
@@ -117,7 +126,11 @@ export default function Reg() {
           <button type="submit" className="btn btn-primary">
             Submit
           </button>
-          {<Link to="/auth/login">Existing User? Log in</Link>}
+          <div className="d-block mt-2 ">
+            <Link style={{ color: "white" }} to="/auth/login">
+              Existing User? Log in
+            </Link>
+          </div>
         </form>
       </div>
     </div>

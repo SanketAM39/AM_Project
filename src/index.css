@@ -4,15 +4,16 @@ p {
 }
 body {
   background-color: #4158d0;
-  background-image: linear-gradient(
+  background: linear-gradient(
     43deg,
     #4158d0 0%,
     #c850c0 46%,
     #ffcc70 100%
   );
   background-repeat: no-repeat;
+  max-height: 100%;
 }
 html {
-  height: 100%;
+  min-height: 100%;
 }
 

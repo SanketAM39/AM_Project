@@ -1,18 +1,46 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ userData, setAuth, auth }) {
+  const { register, handleSubmit } = useForm();
+  const Navigate = useNavigate();
+
+  const onSubmit = (values) => {
+    const result = userData.find(
+      (element) =>
+        element.email === values.email && element.password === values.password
+    );
+    const emailCheck = userData.find(
+      (element) => element.email === values.email
+    );
+    if (!emailCheck) {
+      alert("User not registerd");
+    } 
+    else if (result) {
+      console.log(result);
+      setAuth(result);
+      Navigate("/");
+    } 
+    else {
+      alert("Wrong password");
+    }
+  };
+
   return (
-    <>
-      <h1 className="d-flex justify-content-center mt-3"> Login</h1>
+    <div className="">
+      <h1 className="d-flex justify-content-center mt-5">
+        Login
+      </h1>
       <div className="full-width d-flex justify-content-center and align-items-center">
-        <form className="rounded p-4 p-sm-3">
+        <form className="rounded p-4 p-sm-3" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input
               type="text"
               className="form-control"
-              // autoComplete="off"
+              autoComplete="on"
+              {...register("email")}
             />
           </div>
           {/* <p>{errors.email?.message}</p> */}
@@ -22,17 +50,20 @@ export default function Login() {
             <input
               type="password"
               className="form-control"
-              // autoComplete="off"
+              {...register("password")}
             />
           </div>
-          {/* <p>{errors.password?.message}</p> */}
 
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary ">
             Log in
           </button>
-          {<Link to="/auth/register">Create an account</Link>}
+          <div className="mt-2">
+            <Link style={{ color: "white" }} to="/auth/register">
+              Create an account
+            </Link>
+          </div>
         </form>
       </div>
-    </>
+    </div>
   );
 }
