@@ -1,10 +1,21 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-export default function Login({ userData, setAuth, auth }) {
-  const { register, handleSubmit } = useForm();
+export default function Login({ userData, setAuth }) {
   const Navigate = useNavigate();
+
+  const schema = yup.object().shape({
+    email: yup.string().required("Email address is required"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (values) => {
     const result = userData.find(
@@ -14,24 +25,21 @@ export default function Login({ userData, setAuth, auth }) {
     const emailCheck = userData.find(
       (element) => element.email === values.email
     );
-    if (!emailCheck) {
-      alert("User not registerd");
-    } 
-    else if (result) {
+
+    if (result) {
       console.log(result);
       setAuth(result);
       Navigate("/");
-    } 
-    else {
+    } else if (!emailCheck) {
+      alert("User not registerd");
+    } else {
       alert("Wrong password");
     }
   };
 
   return (
     <div className="">
-      <h1 className="d-flex justify-content-center mt-5">
-        Login
-      </h1>
+      <h1 className="d-flex justify-content-center mt-5">Login</h1>
       <div className="full-width d-flex justify-content-center and align-items-center">
         <form className="rounded p-4 p-sm-3" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
@@ -43,7 +51,7 @@ export default function Login({ userData, setAuth, auth }) {
               {...register("email")}
             />
           </div>
-          {/* <p>{errors.email?.message}</p> */}
+          <p>{errors.email?.message}</p>
 
           <div className="mb-3">
             <label className="form-label">Password</label>

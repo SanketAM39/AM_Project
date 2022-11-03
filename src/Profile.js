@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import ProfilePic from "./Bean.jpeg";
+import ProfilePic from "./assets/Bean.jpeg";
 import {GoVerified} from 'react-icons/go'
 
 export default function Home({ auth, setAuth }) {
@@ -10,34 +10,11 @@ export default function Home({ auth, setAuth }) {
     navigate("/auth/Login");
     setAuth(null);
   };
+  // const update = () => {
+  //   navigate("/update-profile");
+  // };
 
   return (
-    // <div>
-    //   <h1 className="d-flex justify-content-center mt-3">My Profile</h1>
-    //   <h3 className="d-flex justify-content-center mt-3">
-    //     Name : {auth.fullName}
-    //   </h3>
-    //   <h3 className="d-flex justify-content-center mt-3">
-    //     Email : {auth.email}
-    //   </h3>
-    //   <h3 className="d-flex justify-content-center mt-3">Role : {auth.role}</h3>
-    //   <h3 className="d-flex justify-content-center mt-3">
-    //     Email Verified : Yes
-    //   </h3>
-    //   <h3 className="d-flex justify-content-center mt-3">
-    //     Company Name : {auth.companyName}
-    //   </h3>
-    //   <div className="d-flex justify-content-center mt-5">
-    //     <button
-    //       type="button"
-    //       className="btn btn-primary "
-    //       onClick={() => logOut()}
-    //     >
-    //       Logout
-    //     </button>
-    //   </div>
-    // </div>
-
     <div>
       <div className="container mt-5">
         <div className="row d-flex justify-content-center">
@@ -47,6 +24,7 @@ export default function Home({ auth, setAuth }) {
               <div className="text-center">
                 <img
                   src={ProfilePic}
+                  alt="User"
                   width="150"
                   className="rounded-circle img-thumbnail img-fluid"
                 />

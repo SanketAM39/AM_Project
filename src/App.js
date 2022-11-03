@@ -5,6 +5,7 @@ import Register from "./auth/Register";
 import Profile from "./Profile";
 import ProtectedProfile from "./protected/ProtectedProfile";
 import ProtectedLogin from "./protected/ProtectedLogin";
+// import EditProfile from "./EditProfile";
 
 export default function App() {
   const [userData, setUserData] = useState(
@@ -16,7 +17,7 @@ export default function App() {
   }, [userData]);
 
   const [auth, setAuth] = useState(
-    JSON.parse(localStorage.getItem("current-user")|| null)
+    JSON.parse(localStorage.getItem("current-user") || null)
   );
 
   useEffect(() => {
@@ -27,32 +28,38 @@ export default function App() {
     <div>
       <Router>
         <Routes>
-          <Route element={ <ProtectedProfile auth={auth} /> }>
+          <Route element={<ProtectedProfile auth={auth} />}>
             <Route
               exact
               path="/my-profile"
               element={<Profile setAuth={setAuth} auth={auth} />}
             />
+            {/* <Route
+              exact
+              path="/update-profile"
+              element={<EditProfile auth={auth} />}
+            /> */}
           </Route>
-          
-          <Route element={ <ProtectedLogin auth={auth} />} >
-             
-             <Route
-              exact path="/auth/login"
-              element={<Login setAuth={setAuth} userData={userData} />}
-            />
-             <Route
-              exact path="/"
+
+          <Route element={<ProtectedLogin auth={auth} />}>
+            <Route
+              exact
+              path="/auth/login"
               element={<Login setAuth={setAuth} userData={userData} />}
             />
             <Route
-              exact path="/auth/register"
+              exact
+              path="/"
+              element={<Login setAuth={setAuth} userData={userData} />}
+            />
+            <Route
+              exact
+              path="/auth/register"
               element={
                 <Register userData={userData} setUserData={setUserData} />
               }
             />
           </Route>
-
         </Routes>
       </Router>
     </div>

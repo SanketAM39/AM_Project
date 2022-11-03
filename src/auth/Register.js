@@ -18,16 +18,16 @@ export default function Reg({ userData, setUserData }) {
       .matches(
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
         "Enter valid email"
-      )
-      ,
-
+      ),
+      
     companyName: yup.string().required("Field is required !"),
 
     password: yup.string().required("Password is required").min(4).max(12),
     // .matches(
     //   /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
     //   "Password must follow pattern"
-    // )
+    // ),
+
     confirmPassword: yup
       .string()
       .oneOf([yup.ref("password"), null], "Password do not match"),
@@ -56,16 +56,10 @@ export default function Reg({ userData, setUserData }) {
     }
 
   };
-  console.log(userData);
 
   return (
-    <div>
-      <h1
-        className="d-flex justify-content-center mt-3"
-      >
-        {" "}
-        Registration
-      </h1>
+    <div style={{ userSelect: "none" }}>
+      <h1 className="d-flex justify-content-center mt-3"> Registration</h1>
       <div className="full-width d-flex justify-content-center and align-items-center">
         <form onSubmit={handleSubmit(onSubmit)} className="rounded p-4 p-sm-3">
           <div className="mb-3">
