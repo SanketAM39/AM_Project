@@ -3,11 +3,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export default function Reg({ userData, setUserData }) {
+export default function Reg({ userData, setUserData, API_HOST_URL }) {
   const Navigate = useNavigate();
+
   const schema = yup.object().shape({
-    fullName: yup
+    name: yup
       .string()
       .required("Full name is required !")
       .matches(/^[aA-zZ\s]+$/, "Only alphabets are allowed for this field "),
@@ -19,10 +21,17 @@ export default function Reg({ userData, setUserData }) {
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
         "Enter valid email"
       ),
-      
-    companyName: yup.string().required("Field is required !"),
 
-    password: yup.string().required("Password is required").min(4).max(12),
+    company: yup.string().required("Field is required !"),
+
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(8)
+      .matches(
+        "^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$",
+        "Password must follow pattern"
+      ),
     // .matches(
     //   /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
     //   "Password must follow pattern"
@@ -43,18 +52,24 @@ export default function Reg({ userData, setUserData }) {
   });
 
   const onSubmit = (values) => {
-    const result = userData.find((element) => element.email === values.email);
-    if (result) {
-      console.log("user already registered");
-      alert("User already registered");
-      reset();
-    } 
-   else {
-      setUserData([...userData, values]);
-      reset();
-      Navigate("/auth/login");
-    }
+    delete values.confirmPassword;
+    axios
+      .post(`${API_HOST_URL}/auth/register?captcha=false`, values)
+      .then((res) => {
+        console.log(res);
+        Navigate("/auth/login");
+        reset();
+      });
+    //   const result = userData.find((element) => element.email === values.email);
+    //   if (result) {
+    //     alert("User already registered");
+    //     reset();
+    //   }
+    //  else {
+    //     // setUserData([...userData, values]);
+    //     reset();
 
+    //   }
   };
 
   return (
@@ -63,15 +78,15 @@ export default function Reg({ userData, setUserData }) {
       <div className="full-width d-flex justify-content-center and align-items-center">
         <form onSubmit={handleSubmit(onSubmit)} className="rounded p-4 p-sm-3">
           <div className="mb-3">
-            <label className="form-label">Full Name</label>
+            <label className="form-label">Name</label>
             <input
               type="text"
               className="form-control"
               // autoComplete="off"
-              {...register("fullName")}
+              {...register("name")}
             />
           </div>
-          <p>{errors.fullName?.message}</p>
+          <p>{errors.name?.message}</p>
 
           <div className="mb-3">
             <label className="form-label">Email</label>
@@ -90,10 +105,10 @@ export default function Reg({ userData, setUserData }) {
               type="text"
               className="form-control"
               // autoComplete="off"
-              {...register("companyName")}
+              {...register("company")}
             />
           </div>
-          <p>{errors.companyName?.message}</p>
+          <p>{errors.company?.message}</p>
 
           <div className="mb-3">
             <label className="form-label">Password</label>

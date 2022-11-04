@@ -3,10 +3,14 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import axios from "axios";
 
-export default function Login({ userData, setAuth }) {
+export default function Login({ setAuth, auth, API_HOST_URL }) {
+  //Declarations
   const Navigate = useNavigate();
+  // const API_HOST_URL = useContext(API_Context);
 
+  //States
   const schema = yup.object().shape({
     email: yup.string().required("Email address is required"),
   });
@@ -18,23 +22,31 @@ export default function Login({ userData, setAuth }) {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (values) => {
-    const result = userData.find(
-      (element) =>
-        element.email === values.email && element.password === values.password
-    );
-    const emailCheck = userData.find(
-      (element) => element.email === values.email
-    );
+    axios
+      .post(`${API_HOST_URL}/auth/login?captcha=false`, values)
+      .then((res) => {
+        console.log(res);
+        setAuth(res.data.token);
+        console.log(auth);
+        Navigate("/my-profile");
+      });
+    // const result = userData.find(
+    //   (element) =>
+    //     element.email === values.email && element.password === values.password
+    // );
+    // const emailCheck = userData.find(
+    //   (element) => element.email === values.email
+    // );
 
-    if (result) {
-      console.log(result);
-      setAuth(result);
-      Navigate("/");
-    } else if (!emailCheck) {
-      alert("User not registerd");
-    } else {
-      alert("Wrong password");
-    }
+    // if (result) {
+    //   console.log(result);
+    //   // setAuth(result);
+    //   // Navigate("/");
+    // } else if (!emailCheck) {
+    //   alert("User not registerd");
+    // } else {
+    //   alert("Wrong password");
+    // }
   };
 
   return (

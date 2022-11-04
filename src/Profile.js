@@ -1,18 +1,31 @@
-import React from "react";
+import React,{ useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProfilePic from "./assets/Bean.jpeg";
 import {GoVerified} from 'react-icons/go'
+import axios from "axios";
 
-export default function Home({ auth, setAuth }) {
+export default function Home({ auth, setAuth, API_HOST_URL, setUserData, userData }) {
+
+  // Declarations
   const navigate = useNavigate();
+  // const API_HOST_URL = useContext(API_Context);
+
+  // States  
+  useEffect(() => {
+    axios
+      .get(`${API_HOST_URL}/auth/self`, {
+        headers: { Authorization: `Bearer ${auth}` },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setUserData(res.data);
+      });
+  }, []);
 
   const logOut = () => {
     navigate("/auth/Login");
     setAuth(null);
   };
-  // const update = () => {
-  //   navigate("/update-profile");
-  // };
 
   return (
     <div>
@@ -33,12 +46,10 @@ export default function Home({ auth, setAuth }) {
                 <span className="bg-success p-1 px-4 rounded text-white">
                   Verified <GoVerified size="13" className="mb-1 " />
                 </span>
-                <h1 className="mt-2 mb-0">{auth.fullName}</h1>
-                <h3 className="mt-0 mb-0" style={{ color: "red" }}>
-                  {auth.companyName}
-                </h3>
+                <h1 className="mt-2 mb-0">{userData?.name}</h1>
+                <h3 className="mt-0 mb-0 text-danger">{ userData?._org.name}</h3>
                 <h5 className="mb-1 mt-1">Junior Software Engineer</h5>
-                <span className="mt-0">{auth.email}</span>
+                <span className="mt-0">{userData?.email}</span>
 
                 <div className="px-4 mt-1">
                   <p className="fonts"></p>
