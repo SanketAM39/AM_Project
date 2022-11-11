@@ -12,6 +12,7 @@ export default function EditProfile({ auth, userData }) {
     console.log(values.email);
     userData.map(x => x.email === values.email );
   };
+  
   return (
     <div>
       <div className="">

@@ -1,30 +1,35 @@
-import React,{ useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProfilePic from "./assets/Bean.jpeg";
-import {GoVerified} from 'react-icons/go'
-import axios from "axios";
+import { GoVerified } from "react-icons/go";
+import { RiCloseCircleFill } from "react-icons/ri";
+import toast from "react-hot-toast";
+import { secureGet } from "./services/HttpService";
 
-export default function Home({ auth, setAuth, API_HOST_URL, setUserData, userData }) {
-
+export default function Home({ setAuth, userData, setUserData }) {
   // Declarations
   const navigate = useNavigate();
-  // const API_HOST_URL = useContext(API_Context);
 
-  // States  
+  // Hooks
   useEffect(() => {
-    axios
-      .get(`${API_HOST_URL}/auth/self`, {
-        headers: { Authorization: `Bearer ${auth}` },
-      })
+    // axiosInterceptor(auth);
+    secureGet("/auth/self")
       .then((res) => {
-        console.log(res.data);
         setUserData(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          setAuth(null);
+        }
       });
   }, []);
 
   const logOut = () => {
     navigate("/auth/Login");
     setAuth(null);
+    setUserData(null);
+    console.log("Token removed from localStorage");
+    toast.success("Logged out");
   };
 
   return (
@@ -43,18 +48,28 @@ export default function Home({ auth, setAuth, API_HOST_URL, setUserData, userDat
                 />
               </div>
               <div className="text-center mt-3">
-                <span className="bg-success p-1 px-4 rounded text-white">
-                  Verified <GoVerified size="13" className="mb-1 " />
-                </span>
-                <h1 className="mt-2 mb-0">{userData?.name}</h1>
-                <h3 className="mt-0 mb-0 text-danger">{ userData?._org.name}</h3>
-                <h5 className="mb-1 mt-1">Junior Software Engineer</h5>
-                <span className="mt-0">{userData?.email}</span>
+                {userData?.isEmailVerified ? (
+                  <span className="bg-success p-1 px-4 rounded text-white">
+                    Verified <GoVerified size="13" className="mb-1 " />
+                  </span>
+                ) : (
+                  <span className="bg-danger p-1 px-4 rounded text-white">
+                    Not Verified{" "}
+                    <RiCloseCircleFill size="20" className="mb-1" />
+                  </span>
+                )}
 
+                <h1 className="mt-2 mb-0">{userData?.name}</h1>
+                <h3 className="mt-0 mb-0 text-danger">
+                  {userData?._org?.name}
+                </h3>
+                <h5 className="mb-1 mt-1 text-secondary">
+                  Role : {userData?.role}
+                </h5>
+                <span className="mt-0">{userData?.email}</span>
                 <div className="px-4 mt-1">
                   <p className="fonts"></p>
                 </div>
-
                 <div className="buttons">
                   <button
                     className="btn btn-primary px-4 ms-3"
@@ -71,4 +86,3 @@ export default function Home({ auth, setAuth, API_HOST_URL, setUserData, userDat
     </div>
   );
 }
-

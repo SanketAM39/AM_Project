@@ -3,10 +3,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import toast from "react-hot-toast";
+import { post } from "../services/HttpService";
 
-export default function Reg({ userData, setUserData, API_HOST_URL }) {
-  const Navigate = useNavigate();
+export default function Register() {
+
+  // Declarations
+  const navigate = useNavigate();
 
   const schema = yup.object().shape({
     name: yup
@@ -24,14 +27,12 @@ export default function Reg({ userData, setUserData, API_HOST_URL }) {
 
     company: yup.string().required("Field is required !"),
 
-    password: yup
-      .string()
-      .required("Password is required")
-      .min(8)
-      .matches(
-        "^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$",
-        "Password must follow pattern"
-      ),
+    password: yup.string().required("Password is required").min(8),
+    // .matches,
+    // (
+    //   '^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$/',
+    //   "Password must follow pattern"
+    // ),
     // .matches(
     //   /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
     //   "Password must follow pattern"
@@ -42,6 +43,7 @@ export default function Reg({ userData, setUserData, API_HOST_URL }) {
       .oneOf([yup.ref("password"), null], "Password do not match"),
   });
 
+  // Hooks
   const {
     register,
     handleSubmit,
@@ -51,25 +53,19 @@ export default function Reg({ userData, setUserData, API_HOST_URL }) {
     resolver: yupResolver(schema),
   });
 
+  // Actions
   const onSubmit = (values) => {
     delete values.confirmPassword;
-    axios
-      .post(`${API_HOST_URL}/auth/register?captcha=false`, values)
+    post("/auth/register?captcha=false", values)
       .then((res) => {
+        navigate("/auth/login");
         console.log(res);
-        Navigate("/auth/login");
+        toast.success(`User ${res.request.statusText}`);
         reset();
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
       });
-    //   const result = userData.find((element) => element.email === values.email);
-    //   if (result) {
-    //     alert("User already registered");
-    //     reset();
-    //   }
-    //  else {
-    //     // setUserData([...userData, values]);
-    //     reset();
-
-    //   }
   };
 
   return (
@@ -115,7 +111,6 @@ export default function Reg({ userData, setUserData, API_HOST_URL }) {
             <input
               type="password"
               className="form-control"
-              // autoComplete="off"
               {...register("password")}
             />
           </div>
@@ -126,7 +121,6 @@ export default function Reg({ userData, setUserData, API_HOST_URL }) {
             <input
               type="password"
               className="form-control"
-              // autoComplete="off"
               {...register("confirmPassword")}
             />
           </div>

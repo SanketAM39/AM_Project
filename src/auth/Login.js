@@ -1,52 +1,34 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import axios from "axios";
+import toast from "react-hot-toast";
+import { post } from "../services/HttpService";
 
-export default function Login({ setAuth, auth, API_HOST_URL }) {
+export default function Login({ setAuth }) {
   //Declarations
-  const Navigate = useNavigate();
-  // const API_HOST_URL = useContext(API_Context);
+  const navigate = useNavigate();
 
-  //States
-  const schema = yup.object().shape({
-    email: yup.string().required("Email address is required"),
-  });
-
+  // Hooks
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm();
 
+  // Actions
   const onSubmit = (values) => {
-    axios
-      .post(`${API_HOST_URL}/auth/login?captcha=false`, values)
+    post("/auth/login?captcha=false", values)
       .then((res) => {
-        console.log(res);
+        console.log("Response : ", res);
         setAuth(res.data.token);
-        console.log(auth);
-        Navigate("/my-profile");
+        // console.log("Token is Login: ", res.data.token);
+        navigate("/my-profile");
+        toast.success("Login Success!");
+        console.log("Token Stored in LocalStorage");
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
       });
-    // const result = userData.find(
-    //   (element) =>
-    //     element.email === values.email && element.password === values.password
-    // );
-    // const emailCheck = userData.find(
-    //   (element) => element.email === values.email
-    // );
-
-    // if (result) {
-    //   console.log(result);
-    //   // setAuth(result);
-    //   // Navigate("/");
-    // } else if (!emailCheck) {
-    //   alert("User not registerd");
-    // } else {
-    //   alert("Wrong password");
-    // }
   };
 
   return (
@@ -60,7 +42,8 @@ export default function Login({ setAuth, auth, API_HOST_URL }) {
               type="text"
               className="form-control"
               autoComplete="on"
-              {...register("email")}
+              defaultValue="sanket@angularminds.in"
+              {...register("email", { required: "Email is required." })}
             />
           </div>
           <p>{errors.email?.message}</p>
@@ -70,6 +53,7 @@ export default function Login({ setAuth, auth, API_HOST_URL }) {
             <input
               type="password"
               className="form-control"
+              defaultValue="sanket98"
               {...register("password")}
             />
           </div>
