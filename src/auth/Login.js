@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { BiHide, BiShow } from "react-icons/bi";
 import { post } from "../services/HttpService";
 
 export default function Login({ setAuth }) {
+  
   //Declarations
   const navigate = useNavigate();
+  const [type, setType] = useState("password");
 
   // Hooks
   const {
@@ -16,6 +19,13 @@ export default function Login({ setAuth }) {
   } = useForm();
 
   // Actions
+  const handleType = () => {
+    if (type === "password") {
+      setType("text");
+    } else {
+      setType("password");
+    }
+  };
   const onSubmit = (values) => {
     post("/auth/login?captcha=false", values)
       .then((res) => {
@@ -50,12 +60,19 @@ export default function Login({ setAuth }) {
           <div className="mb-3">
             <label className="form-label">Password</label>
             <input
-              type="password"
+              type={type}
               className="form-control"
               autoComplete="on"
               defaultValue="sanket98"
               {...register("password")}
             />
+            <span onClick={handleType}>
+              {type === "password" ? (
+                <BiHide size="20" className="mt-2 " />
+              ) : (
+                <BiShow size="20" className="mt-2 " />
+              )}
+            </span>
           </div>
 
           <button type="submit" className="btn btn-primary ">
