@@ -21,7 +21,6 @@ export default function Login({ setAuth }) {
       .then((res) => {
         console.log("Response : ", res);
         setAuth(res.data.token);
-        // console.log("Token is Login: ", res.data.token);
         navigate("/my-profile");
         toast.success("Login Success!");
         console.log("Token Stored in LocalStorage");
@@ -53,6 +52,7 @@ export default function Login({ setAuth }) {
             <input
               type="password"
               className="form-control"
+              autoComplete="on"
               defaultValue="sanket98"
               {...register("password")}
             />

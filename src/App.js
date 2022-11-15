@@ -10,14 +10,13 @@ import { Toaster } from "react-hot-toast";
 export default function App() {
 
   const [userData, setUserData] = useState();
+  const [isLogin, setIsLogin] = useState();
   const [auth, setAuth] = useState(
     JSON.parse(localStorage.getItem("token") || null)
-    // console.log("State",JSON.parse(localStorage.getItem("token")))
   );
-  // console.log(auth)
+
   useEffect(() => {
     localStorage.setItem("token", JSON.stringify(auth));
-    // console.log("Token is (App): ", JSON.parse(localStorage.getItem("token")));
   }, [auth]);
 
   return (

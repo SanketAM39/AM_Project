@@ -12,14 +12,13 @@ export default function Home({ setAuth, userData, setUserData }) {
 
   // Hooks
   useEffect(() => {
-    // axiosInterceptor(auth);
     secureGet("/auth/self")
       .then((res) => {
         setUserData(res.data);
       })
       .catch((err) => {
         if (err.response.status === 401) {
-          setAuth(null);
+          // setAuth(null);
         }
       });
   }, []);
