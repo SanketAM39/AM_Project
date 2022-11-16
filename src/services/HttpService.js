@@ -10,6 +10,10 @@ export function post(url, data) {
   return axios.post(`${API_HOST_URL}${url}`, data);
 }
 
+export function remove(url, id) {
+  return axios.delete(`${API_HOST_URL}${url}${id}`);
+}
+
 axios.interceptors.request.use(
   (config) => {
     console.log(config);

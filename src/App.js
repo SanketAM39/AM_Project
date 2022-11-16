@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
-import Profile from "./Profile";
+import Profile from "./user/Profile";
 import { ProtectedLogin } from "./protected/ProtectedUser";
 import { ProtectedProfile } from "./protected/ProtectedUser";
 import { Toaster } from "react-hot-toast";
+import Company from "./user/Company";
 
 export default function App() {
-
   const [userData, setUserData] = useState();
-  const [isLogin, setIsLogin] = useState();
   const [auth, setAuth] = useState(
     JSON.parse(localStorage.getItem("token") || null)
   );
@@ -36,11 +35,14 @@ export default function App() {
                 />
               }
             />
-            {/* <Route
+            <Route
               exact
-              path="/update-profile"
-              element={<EditProfile auth={auth} />}
-            /> */}
+              path="/company"
+              element={
+                <Company
+                />
+              }
+            />
           </Route>
 
           <Route element={<ProtectedLogin auth={auth} />}>

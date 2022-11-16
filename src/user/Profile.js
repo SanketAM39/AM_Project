@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ProfilePic from "./assets/Bean.jpeg";
+import ProfilePic from "../assets/Bean.jpeg";
 import { GoVerified } from "react-icons/go";
 import { RiCloseCircleFill } from "react-icons/ri";
 import toast from "react-hot-toast";
-import { secureGet } from "./services/HttpService";
+import { secureGet } from "../services/HttpService";
+
 
 export default function Home({ setAuth, userData, setUserData }) {
+
   // Declarations
   const navigate = useNavigate();
 
@@ -17,9 +19,10 @@ export default function Home({ setAuth, userData, setUserData }) {
         setUserData(res.data);
       })
       .catch((err) => {
-        if (err.response.status === 401) {
-          // setAuth(null);
-        }
+        console.log(err);
+        // if (err.response.status === 401) {
+        //   // setAuth(null);
+        // }
       });
   }, []);
 
@@ -75,6 +78,12 @@ export default function Home({ setAuth, userData, setUserData }) {
                     onClick={() => logOut()}
                   >
                     Logout
+                  </button>
+                  <button
+                    className="btn btn-primary px-4 ms-3"
+                    onClick={() => navigate("/company")}
+                  >
+                    Company
                   </button>
                 </div>
               </div>
