@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_HOST_URL = "https://ngminds.herokuapp.com";
+// const API_HOST_URL = "https://ngminds.herokuapp.com";
+const API_HOST_URL = "https://shop-api.ngminds.com";
 
 export function secureGet(url) {
   return axios.get(`${API_HOST_URL}${url}`);
@@ -10,8 +11,8 @@ export function post(url, data) {
   return axios.post(`${API_HOST_URL}${url}`, data);
 }
 
-export function remove(url, id) {
-  return axios.delete(`${API_HOST_URL}${url}${id}`);
+export function remove(url) {
+  return axios.delete(`${API_HOST_URL}${url}`);
 }
 
 axios.interceptors.request.use(
